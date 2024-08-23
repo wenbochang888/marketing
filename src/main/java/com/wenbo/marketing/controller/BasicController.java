@@ -4,13 +4,19 @@ import com.wenbo.marketing.dao.MktActivityPrizeGrantDAO;
 import com.wenbo.marketing.model.MktActivityPrizeGrant;
 import com.wenbo.marketing.service.MktActivityService;
 import com.wenbo.marketing.utils.GsonUtil;
+import com.wenbo.marketing.utils.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
+import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 
 @Slf4j
@@ -22,6 +28,12 @@ public class BasicController {
 
     @Autowired
     private MktActivityPrizeGrantDAO mktActivityPrizeGrantDAO;
+
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+
+    @Autowired
+    private RedissonClient redissonClient;
 
     @RequestMapping("/")
     @ResponseBody
@@ -52,4 +64,64 @@ public class BasicController {
 
         return GsonUtil.toJson(mktActivityPrizeGrants);
     }
+
+    @RequestMapping("/test/redis/set")
+    @ResponseBody
+    public String testRedisSet(String key, String val) {
+        RedisUtils.set(key, val, stringRedisTemplate);
+        return "ok";
+    }
+
+    @RequestMapping("/test/redis/get")
+    @ResponseBody
+    public String testRedisGet(String key) {
+        String s = RedisUtils.get(key, stringRedisTemplate);
+        log.info("val = {}", s);
+        return StringUtils.isEmpty(s) ? "" : s;
+    }
+
+    @RequestMapping("/test/redis/lock")
+    @ResponseBody
+    public String testRedisLock() {
+        ExecutorService es = Executors.newFixedThreadPool(10);
+
+        for (int i = 0; i < 2; i++) {
+            es.submit(() -> lock());
+        }
+
+        return "ok";
+    }
+
+    private void lock() {
+        try {
+            RedisUtils.tryLock("key", redissonClient, () -> {
+                log.info("get lock success");
+                return "ok";
+            });
+        } catch (Exception e) {
+            log.error("e = {}", e.getMessage(), e);
+        }
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

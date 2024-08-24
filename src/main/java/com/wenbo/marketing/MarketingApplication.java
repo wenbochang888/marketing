@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-@MapperScan("com.wenbo.marketing.dao")
+@MapperScan("com.wenbo.marketing.mapper")
 public class MarketingApplication {
 
     public static void main(String[] args) {

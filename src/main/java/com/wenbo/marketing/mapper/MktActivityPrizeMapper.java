@@ -1,7 +1,7 @@
-package com.wenbo.marketing.dao;
+package com.wenbo.marketing.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
-import com.wenbo.marketing.model.MktActivityInfo;
+import com.wenbo.marketing.model.MktActivityPrize;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -9,6 +9,6 @@ import org.springframework.stereotype.Repository;
  * @date 2024/8/23 16:14
  */
 @Repository
-public interface MktActivityInfoDAO extends BaseMapper<MktActivityInfo> {
+public interface MktActivityPrizeMapper extends BaseMapper<MktActivityPrize> {
 
 }

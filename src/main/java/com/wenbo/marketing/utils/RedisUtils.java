@@ -19,10 +19,10 @@ public final class RedisUtils {
     private static final long ONE_HOURS = 60 * 60 * 1000L;
 
     public static void set(String key, String val, StringRedisTemplate redis) {
-        redis.opsForValue().set(key, val, HALF_HOURS, TimeUnit.MILLISECONDS);
+        redis.opsForValue().set(key, val);
     }
 
-    public static void set(String key, String val, long time, StringRedisTemplate redis) {
+    public static void setEx(String key, String val, long time, StringRedisTemplate redis) {
         redis.opsForValue().set(key, val, time, TimeUnit.MILLISECONDS);
     }
 
@@ -34,14 +34,12 @@ public final class RedisUtils {
         redis.delete(key);
     }
 
-    public static boolean decr(String key, StringRedisTemplate redis) {
-        Long val = redis.opsForValue().decrement(key);
-        return val != null;
+    public static Long decr(String key, StringRedisTemplate redis) {
+        return redis.opsForValue().decrement(key);
     }
 
-    public static boolean incr(String key, StringRedisTemplate redis) {
-        Long val = redis.opsForValue().increment(key);
-        return val != null;
+    public static Long incr(String key, StringRedisTemplate redis) {
+        return redis.opsForValue().increment(key);
     }
 
     public static <T> T tryLock(String key, RedissonClient redissonClient, Supplier<T> supplier) {
@@ -52,9 +50,17 @@ public final class RedisUtils {
                 return supplier.get();
             }
             throw new RuntimeException("try lock error");
-        } catch (Exception e) {
+        }
+
+        catch (RuntimeException e) {
+            throw e;
+        }
+
+        catch (Exception e) {
             throw new RuntimeException("business process error", e);
-        } finally {
+        }
+
+        finally {
             if (lock != null && lock.isHeldByCurrentThread()) {
                 lock.unlock();
             }

@@ -1,7 +1,9 @@
 package com.wenbo.marketing.controller;
 
-import com.wenbo.marketing.dao.MktActivityPrizeGrantDAO;
-import com.wenbo.marketing.model.MktActivityPrizeGrant;
+import com.wenbo.marketing.mapper.MktActivityPrizeGrantMapper;
+import com.wenbo.marketing.model.MktActivityInfo;
+import com.wenbo.marketing.model.MktActivityRule;
+import com.wenbo.marketing.service.ActivityCacheService;
 import com.wenbo.marketing.service.MktActivityService;
 import com.wenbo.marketing.utils.GsonUtil;
 import com.wenbo.marketing.utils.RedisUtils;
@@ -27,13 +29,16 @@ public class BasicController {
     private MktActivityService mktActivityService;
 
     @Autowired
-    private MktActivityPrizeGrantDAO mktActivityPrizeGrantDAO;
+    private MktActivityPrizeGrantMapper mktActivityPrizeGrantMapper;
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;
 
     @Autowired
     private RedissonClient redissonClient;
+
+    @Autowired
+    private ActivityCacheService activityCacheService;
 
     @RequestMapping("/")
     @ResponseBody
@@ -52,23 +57,26 @@ public class BasicController {
     @RequestMapping("/test/mysql/select")
     @ResponseBody
     public String testMysqlSelect() {
-        return mktActivityService.getNewestActivity();
+        return null;
     }
 
     @RequestMapping("/test/mysql/select2")
     @ResponseBody
     public String testMysqlSelect2() {
-        List<MktActivityPrizeGrant> mktActivityPrizeGrants = mktActivityPrizeGrantDAO.selectList(null); // 空的list
-        boolean isNull = mktActivityPrizeGrants == null;
-        log.info("mktActivityPrizeGrants = {}, isNull = {}", mktActivityPrizeGrants, isNull);
+        MktActivityInfo activityInfo = activityCacheService.getActivityInfo();
+        if (activityInfo != null) {
+            String activityId = activityInfo.getActivityId();
+            List<MktActivityRule> mktActivityRules = activityCacheService.listActivityRule(activityId);
 
-        return GsonUtil.toJson(mktActivityPrizeGrants);
+            return GsonUtil.toJson(activityInfo) + " -- " + GsonUtil.toJson(mktActivityRules);
+        }
+	    return "";
     }
 
     @RequestMapping("/test/redis/set")
     @ResponseBody
     public String testRedisSet(String key, String val) {
-        RedisUtils.set(key, val, stringRedisTemplate);
+        RedisUtils.setEx(key, val, 1000 * 60, stringRedisTemplate);
         return "ok";
     }
 
@@ -103,25 +111,3 @@ public class BasicController {
         }
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

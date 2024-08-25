@@ -2,6 +2,7 @@ package com.wenbo.marketing.mapper;
 
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.wenbo.marketing.model.MktActivityPrize;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 /**
@@ -10,5 +11,7 @@ import org.springframework.stereotype.Repository;
  */
 @Repository
 public interface MktActivityPrizeMapper extends BaseMapper<MktActivityPrize> {
+
+	Integer occupyActivityPrize(@Param("activityId") String activityId, @Param("prizeId") String prizeId);
 
 }

@@ -22,4 +22,12 @@ public class MktActivityPrizeGrantDao extends ServiceImpl<MktActivityPrizeGrantM
 		return baseMapper.selectOne(wrapper);
 	}
 
+	public Integer insert(MktActivityPrizeGrant grant) {
+		if (grant == null || StringUtils.isEmpty(grant.getGrantId())) {
+			return 0;
+		}
+
+		return baseMapper.insert(grant);
+	}
+
 }

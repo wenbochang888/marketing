@@ -13,6 +13,10 @@ CREATE TABLE `mkt_activity_info` (
      KEY `ix_updated_at` (`updated_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='营销活动表';
 
+INSERT INTO `mkt_activity_info` (`id`, `activity_id`, `activity_name`, `validity_date_start`, `validity_date_end`, `enable`, `updated_at`, `created_at`)
+VALUES
+    (1, 'A1000001', '抽奖活动', '2020-01-14 20:16:17', '2030-10-20 00:00:00', 1, '2024-08-23 16:13:49', '2024-08-23 16:13:49');
+
 
 CREATE TABLE `mkt_activity_rule` (
      `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键',
@@ -26,6 +30,11 @@ CREATE TABLE `mkt_activity_rule` (
      KEY `ix_created_at` (`created_at`),
      KEY `ix_updated_at` (`updated_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='营销活动准入规则表';
+
+INSERT INTO `mkt_activity_rule` (`id`, `activity_id`, `rule_key`, `rule_name`, `updated_at`, `created_at`)
+VALUES
+    (1, 'A1000001', 'check_phone', '检查手机号', '2024-08-24 14:23:14', '2024-08-24 14:23:14');
+
 
 
 CREATE TABLE `mkt_activity_prize` (
@@ -46,6 +55,11 @@ CREATE TABLE `mkt_activity_prize` (
       KEY `ix_updated_at` (`updated_at`),
       KEY `ix_prize_id` (`prize_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='营销活动奖品表';
+
+INSERT INTO `mkt_activity_prize` (`id`, `activity_id`, `prize_id`, `prize_name`, `prize_amount`, `prize_total_num`, `prize_remaining_num`, `prize_occupy_num`, `enable`, `updated_at`, `created_at`)
+VALUES
+    (1, 'A1000001', 'P1000001', '5元红包', 500, 100, 100, 0, 1, '2024-08-24 16:42:55', '2024-08-24 16:42:36');
+
 
 
 CREATE TABLE `mkt_activity_prize_grant` (

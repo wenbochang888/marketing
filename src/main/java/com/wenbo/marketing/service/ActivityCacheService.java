@@ -62,6 +62,15 @@ public class ActivityCacheService {
 		return GsonUtil.fromJson(value, typeToken);
 	}
 
+	public MktActivityPrize getActivityPrize() {
+		String value = RedisUtils.get(MktActivityConstants.CACHE_MKT_ACTIVITY_PRIZE, stringRedisTemplate);
+		log.info("key = {}, value = {}", MktActivityConstants.CACHE_MKT_ACTIVITY_PRIZE, value);
+		if (StrUtil.isBlank(value)) {
+			return null;
+		}
+		return GsonUtil.fromJson(value, MktActivityPrize.class);
+	}
+
 	private String activityId;
 
 	@PostConstruct
@@ -87,7 +96,7 @@ public class ActivityCacheService {
 		MktActivityPrize mktActivityPrize = mktActivityPrizes.get(0);
 		RedisUtils.set(MktActivityConstants.CACHE_MKT_ACTIVITY_PRIZE, GsonUtil.toJson(mktActivityPrize), stringRedisTemplate);
 		RedisUtils.set(MktActivityConstants.CACHE_MKT_ACTIVITY_PRIZE_NUM,
-				GsonUtil.toJson(mktActivityPrize.getPrizeTotalNum()), stringRedisTemplate);
+				GsonUtil.toJson(mktActivityPrize.getPrizeRemainingNum()), stringRedisTemplate);
 	}
 
 	private void cacheAllActivity() {

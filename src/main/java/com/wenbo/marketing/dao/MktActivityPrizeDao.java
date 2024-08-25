@@ -39,4 +39,13 @@ public class MktActivityPrizeDao extends ServiceImpl<MktActivityPrizeMapper, Mkt
 		;
 		return baseMapper.selectOne(wrapper);
 	}
+
+	public Integer occupyActivityPrize(String activityId, String prizeId) {
+		if (StringUtils.isAnyEmpty(activityId, prizeId)) {
+			return 0;
+		}
+
+		return baseMapper.occupyActivityPrize(activityId, prizeId);
+	}
+
 }

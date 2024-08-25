@@ -43,7 +43,7 @@ public class ActivityCacheService {
 	public MktActivityInfo getActivityInfo() {
 		String key = StrUtil.format(MktActivityConstants.CACHE_MKT_ACTIVITY_INFO);
 		String value = RedisUtils.get(key, stringRedisTemplate);
-		log.info("key = {}, value = {}", key, value);
+		log.debug("key = {}, value = {}", key, value);
 		if (StrUtil.isBlank(value)) {
 			return null;
 		}
@@ -53,7 +53,7 @@ public class ActivityCacheService {
 	public List<MktActivityRule> listActivityRule(String activityId) {
 		String ruleKey = StrUtil.format(MktActivityConstants.CACHE_MKT_ACTIVITY_RULE, activityId);
 		String value = RedisUtils.get(ruleKey, stringRedisTemplate);
-		log.info("key = {}, value = {}", ruleKey, value);
+		log.debug("key = {}, value = {}", ruleKey, value);
 		if (StrUtil.isBlank(value)) {
 			return Lists.newArrayList();
 		}
@@ -64,7 +64,7 @@ public class ActivityCacheService {
 
 	public MktActivityPrize getActivityPrize() {
 		String value = RedisUtils.get(MktActivityConstants.CACHE_MKT_ACTIVITY_PRIZE, stringRedisTemplate);
-		log.info("key = {}, value = {}", MktActivityConstants.CACHE_MKT_ACTIVITY_PRIZE, value);
+		log.debug("key = {}, value = {}", MktActivityConstants.CACHE_MKT_ACTIVITY_PRIZE, value);
 		if (StrUtil.isBlank(value)) {
 			return null;
 		}
@@ -83,7 +83,7 @@ public class ActivityCacheService {
 
 
 		// 随机比例获取奖品
-		RedisUtils.set(MktActivityConstants.CACHE_MKT_ACTIVITY_PRIZE_RANDOM, "50", stringRedisTemplate);
+		RedisUtils.set(MktActivityConstants.CACHE_MKT_ACTIVITY_PRIZE_RANDOM, "100", stringRedisTemplate);
 	}
 
 	private void cachePrizeInfo() {

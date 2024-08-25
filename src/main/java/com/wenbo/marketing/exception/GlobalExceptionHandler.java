@@ -11,7 +11,7 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(RuntimeException.class)
 	public CommonResult handleHttpMessageNotReadableException(RuntimeException e) {
-		log.warn("e = {}", e.getMessage(), e);
+		log.warn("e = {}", e.getMessage());
 		return CommonResult.fail(e.getMessage());
 	}
 

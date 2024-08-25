@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true">
+    <!--定义变量-->
+    <property name="APP_NAME" value="marketing"/>
+    <property name="log_filePath" value="/root/logs/marketing"/>
+    <timestamp key="TIMESTAMP" datePattern="yyyy-MM-dd"/>
+
+    <!-- 输出到控制台 -->
+    <appender name="stdout" class="ch.qos.logback.core.ConsoleAppender">
+        <layout class="ch.qos.logback.classic.PatternLayout">
+            <pattern>
+                [%-5p %d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] [%X{sessionId}] - [%logger{0}.%M:%L] [%m]%n
+<!--                [%-5p %d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] [%X{sessionId}] - [%F.%M:%L] [%m]%n-->
+<!--                [INFO  2023-03-27 09:41:46.993] [http-nio-8099-exec-3] [] - [TestController.java.testPublish0:46] [transactionTemplate = PROPAGATION_REQUIRED,ISOLATION_REPEATABLE_READ,timeout_30]-->
+            </pattern>
+        </layout>
+    </appender>
+
+    <appender name="fileLog" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>marketing.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 单个文件大小 -->
+            <fileNamePattern>marketing.%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <!-- 日志保留90天 -->
+            <maxHistory>180</maxHistory>
+            <!-- 单个文件大小 -->
+            <maxFileSize>10MB</maxFileSize>
+        </rollingPolicy>
+        <encoder>
+            <charset>UTF-8</charset>
+            <pattern>
+                [%-5p %d{yyyy-MM-dd HH:mm:ss.SSS}] [%thread] [%X{sessionId}] - [%logger{0}.%M:%L] [%m]%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <!-- 这里一定要指向name -->
+    <root level="INFO">
+        <appender-ref ref="fileLog"/>
+        <appender-ref ref="stdout"/>
+    </root>
+
+</configuration>

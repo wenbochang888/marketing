@@ -27,6 +27,7 @@ public class MarketingActivityController {
 	@RequestMapping("/activity/grant")
 	@ResponseBody
 	public CommonResult grantActivityPrize(String phone, String activityId) {
+		log.info("grantActivityPrize phone = {}, activityId = {}", phone, activityId);
 		boolean success = mktActivityService.grantPrize(phone, activityId);
 		if (success) {
 			return CommonResult.success();

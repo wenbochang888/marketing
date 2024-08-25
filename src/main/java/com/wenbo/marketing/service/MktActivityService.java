@@ -92,14 +92,18 @@ public class MktActivityService {
             int seed = ThreadLocalRandom.current().nextInt(0, 100) + 1; // 1-100
             int random = NumberUtils.toInt(RedisUtils.get(CACHE_MKT_ACTIVITY_PRIZE_RANDOM, stringRedisTemplate));
             if (seed > random) {
-                throw new RuntimeException(ERROR_MSG);
+                //log.warn("随机比例被拦截 seed = {}, random = {}", seed, random);
+                throw new RuntimeException("随机比例拦截 - " + ERROR_MSG);
             }
 
 
             // 3. 缓存预减库存
             Long num = RedisUtils.decr(CACHE_MKT_ACTIVITY_PRIZE_NUM, stringRedisTemplate);
             if (num == null || num < 0) {
-                throw new RuntimeException(ERROR_MSG);
+
+                // 将redis库存加回，可做可不做，看业务需求
+                RedisUtils.incr(CACHE_MKT_ACTIVITY_PRIZE_NUM, stringRedisTemplate);
+                throw new RuntimeException("redis库存不足 - " + ERROR_MSG);
             }
 
             MktActivityPrize activityPrize = activityCacheService.getActivityPrize();
@@ -111,14 +115,16 @@ public class MktActivityService {
                 // 4.1 扣减库存
                 Integer update = mktActivityPrizeDao.occupyActivityPrize(activityPrize.getActivityId(), activityPrize.getPrizeId());
                 if (update == null || update <= 0) {
-                    throw new RuntimeException(ERROR_MSG);
+                    //log.warn("mysql 扣减库存失败 update = {}", update);
+                    throw new RuntimeException("mysql库存扣减失败 - " + ERROR_MSG);
                 }
 
                 // 4.2 插入发奖记录
                 MktActivityPrizeGrant grant = buildMktActivityPrizeGrant(phone, activityPrize);
                 Integer insert = mktActivityPrizeGrantDao.insert(grant);
                 if (insert == null || insert <= 0) {
-                    throw new RuntimeException(ERROR_MSG);
+                    //log.warn("mysql 插入发奖记录失败 insert = {}", insert);
+                    throw new RuntimeException("mysql 插入发奖记录失败 - " + ERROR_MSG);
                 }
 
                 return true;

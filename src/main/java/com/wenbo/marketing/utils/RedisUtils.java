@@ -49,7 +49,7 @@ public final class RedisUtils {
             if (lock.tryLock()) {
                 return supplier.get();
             }
-            throw new RuntimeException("try lock error");
+            throw new RuntimeException("try lock error key = " + key);
         }
 
         catch (RuntimeException e) {

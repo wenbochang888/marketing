@@ -77,3 +77,24 @@ CREATE TABLE `mkt_activity_prize_grant` (
     KEY `ix_updated_at` (`updated_at`),
     KEY `ix_created_at` (`created_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='营销活动奖品发放表';
+
+
+
+SELECT * FROM `mkt_activity_info`
+SELECT * FROM `mkt_activity_rule`
+
+SELECT * FROM `mkt_activity_prize`
+SELECT * FROM `mkt_activity_prize_grant`ORDER BY id DESC
+
+DELETE FROM mkt_activity_prize_grant
+
+UPDATE mkt_activity_prize SET
+`prize_total_num`=100,
+prize_remaining_num = 100,
+prize_occupy_num = 0 WHERE id = 1
+
+
+
+
+
+

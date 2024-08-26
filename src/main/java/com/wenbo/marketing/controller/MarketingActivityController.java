@@ -1,13 +1,13 @@
 package com.wenbo.marketing.controller;
 
-import com.wenbo.marketing.model.CommonResult;
-import com.wenbo.marketing.model.MktActivityInfo;
+import com.wenbo.marketing.model.*;
 import com.wenbo.marketing.service.MktActivityService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @Slf4j
@@ -18,7 +18,12 @@ public class MarketingActivityController {
 	@Autowired
 	private MktActivityService mktActivityService;
 
-	@RequestMapping("/rule/check")
+	@GetMapping("/rule/check")
+	public String checkActivityPage() {
+		return "checkActivity";
+	}
+
+	@PostMapping("/rule/check")
 	@ResponseBody
 	public MktActivityInfo checkActivity(String phone) {
 		return mktActivityService.checkActivityRule(phone);
@@ -34,6 +39,12 @@ public class MarketingActivityController {
 		}
 
 		return CommonResult.fail();
+	}
+
+	@RequestMapping("/activity/list/grant")
+	@ResponseBody
+	public List<MktActivityPrizeGrant> listGrant(String phone) {
+		return mktActivityService.listAllMktActivityPrizeGrant();
 	}
 }
 

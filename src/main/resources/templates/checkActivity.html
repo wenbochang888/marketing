@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>营销-抽奖活动秒杀</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+    <style>
+        .container {
+            max-width: 600px;
+            margin: auto;
+            padding-top: 50px;
+        }
+        .center-text {
+            text-align: center;
+        }
+        .red-text {
+            color: red;
+            font-size: 14px; /* 修改这里可以调整字体大小 */
+        }
+        .card {
+            margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .form-control {
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        .form-control:focus {
+            box-shadow: 0 0 10px rgba(0, 123, 255, 0.5);
+        }
+        .btn {
+            border-radius: 20px;
+            transition: all 0.3s ease;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+        .btn-success {
+            background-color: #28a745;
+            border-color: #28a745;
+        }
+        .btn-success:hover {
+            background-color: #218838;
+            border-color: #1e7e34;
+        }
+        .spinner-border {
+            display: none;
+            width: 1.5rem;
+            height: 1.5rem;
+            vertical-align: middle;
+        }
+        .footer {
+            margin-top: 50px;
+            text-align: center;
+            font-size: 12px;
+            color: #888;
+        }
+        .error-message {
+            color: red;
+            font-size: 12px;
+        }
+        .modal-body.success {
+            color: green;
+        }
+        .modal-body.failure {
+            color: red;
+        }
+        .table-container {
+            margin-top: 50px; /* 增加距离 */
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2 class="center-text red-text">手机号尾号偶数有权限抽奖，奇数无权限抽奖</h2>
+    <h2 class="center-text mt-5">营销-抽奖活动秒杀</h2>
+    <div class="card">
+        <form id="checkForm" class="mt-3">
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <div class="input-group">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                    </div>
+                    <input type="text" class="form-control" id="phone" name="phone" required>
+                </div>
+                <div id="phoneError" class="error-message"></div>
+            </div>
+            <button type="button" class="btn btn-primary btn-block" onclick="checkActivity()">校验抽奖资格 <span class="spinner-border spinner-border-sm" id="checkSpinner"></span></button>
+        </form>
+        <div id="result" class="mt-3 center-text"></div>
+        <button id="grantButton" class="btn btn-success btn-block mt-3" onclick="grantPrize()" disabled>抽奖 <span class="spinner-border spinner-border-sm" id="grantSpinner"></span></button>
+    </div>
+    <div class="table-container">
+        <h3 class="center-text">抽奖记录</h3>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>活动ID</th>
+                <th>奖品ID</th>
+                <th>发放ID</th>
+                <th>发放时间</th>
+            </tr>
+            </thead>
+            <tbody id="prizeTableBody">
+            <!-- 动态加载数据 -->
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="footer">
+    &copy; 2023 营销活动. All rights reserved.
+</div>
+
+<!-- 模态框 -->
+<div class="modal fade" id="resultModal" tabindex="-1" role="dialog" aria-labelledby="resultModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="resultModalLabel">提示</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body" id="modalMessage">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function validatePhone(phone) {
+        var phonePattern = /^[0-9]{10,11}$/;
+        return phonePattern.test(phone);
+    }
+
+    function checkActivity() {
+        var phone = $('#phone').val();
+        if (!validatePhone(phone)) {
+            $('#phoneError').text('请输入有效的手机号（10到11位数字）。');
+            return;
+        } else {
+            $('#phoneError').text('');
+        }
+
+        $('#checkSpinner').show(); // 显示加载动画
+        $('#grantButton').prop('disabled', true); // 禁用按钮
+        $.post('/marketing/rule/check', { phone: phone }, function(data) {
+            var resultDiv = $('#result');
+            resultDiv.empty();
+            $('#checkSpinner').hide(); // 隐藏加载动画
+            if (data.enable === 1) {
+                resultDiv.append('<p class="text-success">您有权限参与活动。</p>');
+                $('#grantButton').prop('disabled', false);
+            } else {
+                resultDiv.append('<p class="text-danger">您没有权限参与活动。</p>');
+                $('#grantButton').prop('disabled', true);
+            }
+        });
+    }
+
+    function grantPrize() {
+        var phone = $('#phone').val();
+        var activityId = 'someActivityId'; // Replace with actual activity ID
+        $('#grantSpinner').show(); // 显示加载动画
+        $('#grantButton').prop('disabled', true); // 禁用按钮
+        $.post('/marketing/activity/grant', { phone: phone, activityId: activityId }, function(data) {
+            $('#grantSpinner').hide(); // 隐藏加载动画
+            $('#grantButton').prop('disabled', false); // 启用按钮
+            if (data.success) {
+                $('#modalMessage').removeClass('failure').addClass('success').text('奖品发放成功！');
+            } else {
+                $('#modalMessage').removeClass('success').addClass('failure').text('奖品发放失败：' + data.msg);
+            }
+            $('#resultModal').modal('show');
+            loadPrizeList(phone); // 重新加载抽奖记录
+        });
+    }
+
+    function loadPrizeList(phone) {
+        $.get('/marketing/activity/list/grant', { phone: phone }, function(data) {
+            var prizeTableBody = $('#prizeTableBody');
+            prizeTableBody.empty();
+            data.forEach(function(prize) {
+                var row = '<tr>' +
+                    '<td>' + prize.activityId + '</td>' +
+                    '<td>' + prize.prizeId + '</td>' +
+                    '<td>' + prize.grantId + '</td>' +
+                    '<td>' + new Date(prize.grantTime).toLocaleString() + '</td>' +
+                    '</tr>';
+                prizeTableBody.append(row);
+            });
+        });
+    }
+
+    // 监听输入框变化，重置按钮状态
+    $('#phone').on('input', function() {
+        $('#grantButton').prop('disabled', true);
+        $('#result').empty();
+        $('#phoneError').text('');
+    });
+
+    // 页面加载时，加载抽奖记录
+    $(document).ready(function() {
+        var phone = $('#phone').val();
+        loadPrizeList(phone);
+    });
+</script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

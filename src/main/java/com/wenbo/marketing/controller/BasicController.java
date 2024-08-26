@@ -13,8 +13,7 @@ import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -40,11 +39,10 @@ public class BasicController {
     @Autowired
     private ActivityCacheService activityCacheService;
 
-    @RequestMapping("/")
-    @ResponseBody
+    @GetMapping("/")
     public String index() {
         log.info("Hello Index");
-        return "Hello Index";
+        return "redirect:/marketing/rule/check";
     }
 
     @RequestMapping("/hello")

@@ -8,6 +8,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Slf4j
 @Repository
 public class MktActivityPrizeGrantDao extends ServiceImpl<MktActivityPrizeGrantMapper, MktActivityPrizeGrant> {
@@ -28,6 +30,13 @@ public class MktActivityPrizeGrantDao extends ServiceImpl<MktActivityPrizeGrantM
 		}
 
 		return baseMapper.insert(grant);
+	}
+
+	public List<MktActivityPrizeGrant> listAllMktActivityPrizeGrant() {
+		LambdaQueryWrapper<MktActivityPrizeGrant> wrapper = new LambdaQueryWrapper<>();
+		wrapper.orderByDesc(MktActivityPrizeGrant::getId);
+		wrapper.last(" limit 5");
+		return baseMapper.selectList(wrapper);
 	}
 
 }

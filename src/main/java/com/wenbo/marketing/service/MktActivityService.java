@@ -74,6 +74,10 @@ public class MktActivityService {
         return activityInfo;
     }
 
+    public List<MktActivityPrizeGrant> listAllMktActivityPrizeGrant() {
+        return mktActivityPrizeGrantDao.listAllMktActivityPrizeGrant();
+    }
+
     public boolean grantPrize(String phone, String activity) {
         if (StringUtils.isAnyEmpty(activity, phone)) {
             throw new RuntimeException(ERROR_MSG);

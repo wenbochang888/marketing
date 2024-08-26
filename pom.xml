@@ -49,7 +49,19 @@
             <groupId>org.redisson</groupId>
             <artifactId>redisson-spring-boot-starter</artifactId>
             <version>3.35.0</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>redisson-spring-data-33</artifactId>
+                    <groupId>org.redisson</groupId>
+                </exclusion>
+            </exclusions>
         </dependency>
+        <dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-data-27</artifactId>
+            <version>3.35.0</version>
+        </dependency>
+
 
         <dependency>
             <groupId>org.projectlombok</groupId>

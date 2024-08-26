@@ -43,7 +43,7 @@ public class MarketingActivityController {
 
 	@RequestMapping("/activity/list/grant")
 	@ResponseBody
-	public List<MktActivityPrizeGrant> listGrant(String phone) {
+	public List<MktActivityPrizeGrant> listGrant() {
 		return mktActivityService.listAllMktActivityPrizeGrant();
 	}
 }

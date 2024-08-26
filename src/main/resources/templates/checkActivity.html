@@ -146,6 +146,8 @@
         return phonePattern.test(phone);
     }
 
+    let activityId = null; // 全局变量，用于存储activityId
+
     function checkActivity() {
         var phone = $('#phone').val();
         if (!validatePhone(phone)) {
@@ -163,17 +165,25 @@
             $('#checkSpinner').hide(); // 隐藏加载动画
             if (data.enable === 1) {
                 resultDiv.append('<p class="text-success">您有权限参与活动。</p>');
+                activityId = data.activityId; // 获取activityId
                 $('#grantButton').prop('disabled', false);
             } else {
                 resultDiv.append('<p class="text-danger">您没有权限参与活动。</p>');
                 $('#grantButton').prop('disabled', true);
             }
+        }).fail(function() {
+            $('#checkSpinner').hide(); // 隐藏加载动画
+            $('#result').append('<p class="text-danger">校验失败，请稍后重试。</p>');
         });
     }
 
     function grantPrize() {
         var phone = $('#phone').val();
-        var activityId = 'someActivityId'; // Replace with actual activity ID
+        if (!activityId) {
+            $('#modalMessage').removeClass('success').addClass('failure').text('未能获取活动ID，请先校验抽奖资格。');
+            $('#resultModal').modal('show');
+            return;
+        }
         $('#grantSpinner').show(); // 显示加载动画
         $('#grantButton').prop('disabled', true); // 禁用按钮
         $.post('/marketing/activity/grant', { phone: phone, activityId: activityId }, function(data) {
@@ -186,8 +196,14 @@
             }
             $('#resultModal').modal('show');
             loadPrizeList(phone); // 重新加载抽奖记录
+        }).fail(function() {
+            $('#grantSpinner').hide(); // 隐藏加载动画
+            $('#grantButton').prop('disabled', false); // 启用按钮
+            $('#modalMessage').removeClass('success').addClass('failure').text('奖品发放失败，请稍后重试。');
+            $('#resultModal').modal('show');
         });
     }
+
 
     function loadPrizeList(phone) {
         $.get('/marketing/activity/list/grant', { phone: phone }, function(data) {

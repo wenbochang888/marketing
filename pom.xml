@@ -131,8 +131,7 @@
                 <version>${spring-boot.version}</version>
                 <configuration>
                     <mainClass>com.wenbo.marketing.MarketingApplication</mainClass>
-                    <skip>true</skip>
-                </configuration>
+                </configuration>  <!-- skip=true 后续要去掉 -->
                 <executions>
                     <execution>
                         <id>repackage</id>

@@ -83,6 +83,10 @@ public class MktActivityService {
             throw new RuntimeException(ERROR_MSG);
         }
 
+        if (checkActivityRule(phone) == null) {
+            throw new RuntimeException("请勿恶意请求接口");
+        }
+
         // phone为幂等键
         String key = StrUtil.format(ACTIVITY_PHONE_LOCK, activity, phone);
         boolean success = RedisUtils.tryLock(key, redissonClient, () -> {

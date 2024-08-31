@@ -14,9 +14,9 @@ import java.util.function.Supplier;
 public final class RedisUtils {
     private RedisUtils() {}
 
-    private static final long HALF_HOURS = 30 * 60 * 1000L;
+    public static final long HALF_HOURS = 30 * 60 * 1000L;
 
-    private static final long ONE_HOURS = 60 * 60 * 1000L;
+    public static final long ONE_HOURS = 60 * 60 * 1000L;
 
     public static void set(String key, String val, StringRedisTemplate redis) {
         redis.opsForValue().set(key, val);
@@ -24,6 +24,10 @@ public final class RedisUtils {
 
     public static void setEx(String key, String val, long time, StringRedisTemplate redis) {
         redis.opsForValue().set(key, val, time, TimeUnit.MILLISECONDS);
+    }
+
+    public static void setEx(String key, String val, long time, TimeUnit unit, StringRedisTemplate redis) {
+        redis.opsForValue().set(key, val, time, unit);
     }
 
     public static String get(String key, StringRedisTemplate redis) {

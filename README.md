@@ -5,7 +5,7 @@
 4. 补充mysql用户名密码，redis用户名密码 [application.properties](src%2Fmain%2Fresources%2Fapplication.properties)
 5. 请求MarketingActivityController 校验抽奖资格 + 进行抽奖
 
-# [点我 - 体验地址](http://101.33.233.214:8989/)
+# [点我 - 体验地址](https://www.gdufe888.top/marketing/rule/check)
 此前端页面完全是用GPT生成的，感谢GPT的贡献，远远提高了我的生产力
 
 

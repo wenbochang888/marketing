@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -27,7 +26,7 @@ public class TestIpBlock {
 	private MktActivityPrizeGrantDao mktActivityPrizeGrantDao;
 
 
-	@Scheduled(cron = "*/10 * * * * *")
+	//@Scheduled(cron = "*/10 * * * * *")
 	public void cron() {
 		List<MktActivityPrizeGrant> mktActivityPrizeGrants = mktActivityPrizeGrantDao.listIpBlock();
 		if (CollectionUtils.isEmpty(mktActivityPrizeGrants)) {

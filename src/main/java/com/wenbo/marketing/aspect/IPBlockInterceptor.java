@@ -63,7 +63,7 @@ public class IPBlockInterceptor implements HandlerInterceptor {
                 if (cnt > CNT) {
                     log.error("ip = {}, 请求过快，被限制", ip);
                     cnt--;
-                    RedisUtils.setEx(ip, cnt + "", RedisUtils.HALF_HOURS, redisTemplate);
+                    RedisUtils.setEx(ip, cnt + "", 24 * RedisUtils.ONE_HOURS, redisTemplate);
                     return false;
                 }
                 log.info("ip = {}, {}s之内第{}次请求{}，参数为{}，通过", ip, TIME, cnt, url, param);

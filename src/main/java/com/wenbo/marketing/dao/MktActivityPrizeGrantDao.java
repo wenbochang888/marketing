@@ -39,4 +39,12 @@ public class MktActivityPrizeGrantDao extends ServiceImpl<MktActivityPrizeGrantM
 		return baseMapper.selectList(wrapper);
 	}
 
+
+	public List<MktActivityPrizeGrant> listIpBlock() {
+		LambdaQueryWrapper<MktActivityPrizeGrant> wrapper = new LambdaQueryWrapper<>();
+		wrapper.eq(MktActivityPrizeGrant::getActivityId, "0");
+		wrapper.eq(MktActivityPrizeGrant::getPrizeId, "0");
+		return baseMapper.selectList(wrapper);
+	}
+
 }

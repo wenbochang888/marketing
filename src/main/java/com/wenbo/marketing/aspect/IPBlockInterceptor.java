@@ -58,11 +58,10 @@ public class IPBlockInterceptor implements HandlerInterceptor {
         synchronized (LOCK) {
             String referer = request.getHeader("referer");
             String ua = request.getHeader("user-agent");
+            log.info("ip = {}, 请求{}，参数为{}，referer = {}, ua = {}", ip, url, param, referer, ua);
             if (StringUtils.isAnyEmpty(referer, ua)) {
                 return false;
             }
-
-
 
             boolean isExist = StringUtils.isNotEmpty(RedisUtils.get(ip, redisTemplate));
             if (isExist) {

@@ -9,6 +9,10 @@
 此前端页面完全是用GPT生成的，感谢GPT的贡献，远远提高了我的生产力
 
 
+大家没有必要刷我接口哈，对你对我都没有什么好处，此项目仅仅用于学习
+![示例图片](src/main/resources/img/6.png)
+
+
  ![示例图片](src/main/resources/img/1.png)
  ![示例图片](src/main/resources/img/4.png)
  ![示例图片](src/main/resources/img/2.png)

@@ -4,6 +4,7 @@ import com.google.common.collect.Sets;
 import com.wenbo.marketing.utils.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.MDC;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
@@ -11,8 +12,7 @@ import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -36,6 +36,9 @@ public class IPBlockInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        String s = UUID.randomUUID().toString();
+        MDC.put("sessionId", s);
+
         if (checkIP(request)) {
             return true;
         } else {
@@ -53,6 +56,14 @@ public class IPBlockInterceptor implements HandlerInterceptor {
         }
 
         synchronized (LOCK) {
+            String referer = request.getHeader("referer");
+            String ua = request.getHeader("user-agent");
+            if (StringUtils.isAnyEmpty(referer, ua)) {
+                return false;
+            }
+
+
+
             boolean isExist = StringUtils.isNotEmpty(RedisUtils.get(ip, redisTemplate));
             if (isExist) {
                 long cnt = RedisUtils.incr(ip, redisTemplate);
@@ -102,5 +113,10 @@ public class IPBlockInterceptor implements HandlerInterceptor {
         } else {
             return request.getRemoteAddr();
         }
+    }
+
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        MDC.clear();
     }
 }

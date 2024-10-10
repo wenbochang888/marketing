@@ -63,6 +63,10 @@ public class IPBlockInterceptor implements HandlerInterceptor {
                 return false;
             }
 
+            if (StringUtils.containsIgnoreCase(ua, "node") || !StringUtils.containsIgnoreCase(ua, "Mozilla")) {
+                return false;
+            }
+
             boolean isExist = StringUtils.isNotEmpty(RedisUtils.get(ip, redisTemplate));
             if (isExist) {
                 long cnt = RedisUtils.incr(ip, redisTemplate);

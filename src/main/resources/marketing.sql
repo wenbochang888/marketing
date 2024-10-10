@@ -89,8 +89,8 @@ SELECT * FROM `mkt_activity_prize_grant`ORDER BY id DESC
 DELETE FROM mkt_activity_prize_grant
 
 UPDATE mkt_activity_prize SET
-`prize_total_num`=100,
-prize_remaining_num = 100,
+`prize_total_num`=10000,
+prize_remaining_num = 10000,
 prize_occupy_num = 0 WHERE id = 1
 
 

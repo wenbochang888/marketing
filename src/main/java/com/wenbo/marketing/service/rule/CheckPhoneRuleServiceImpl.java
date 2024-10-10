@@ -33,4 +33,8 @@ public class CheckPhoneRuleServiceImpl implements BaseRuleService {
 	public String getRuleKey() {
 		return ActivityRuleKeyEnum.CHECK_PHONE.getRuleKey();
 	}
+
+	public static void main(String[] args) {
+		System.out.println(Validator.isMobile("12162544904"));
+	}
 }
